@@ -1,17 +1,11 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import {createMeeting, getMeetingData} from "./interface";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Link,
-  Route
-} from 'react-router-dom';
+import React from "react";
+import "./App.css";
+import { createMeeting, getMeetingData } from "./interface";
+import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
+
 const LandingPage = () => {
-  return(
-    <>
-    </>
+  return (
+    <></>
     /*
     Timetab Header
     Event Name Input
@@ -21,12 +15,12 @@ const LandingPage = () => {
     
     CreateEventButton
     */
-  )
-}
+  );
+};
+
 const EventView = () => {
-  return(
-    <>
-    </>
+  return (
+    <></>
     /*
       Timetab Header
       Event Name
@@ -34,20 +28,19 @@ const EventView = () => {
       Availability Table
       Availability Legend
     */
-  )
-}
+  );
+};
 
 function App() {
-  getMeetingData('D1PL2j9JfnyHuTlmF5Y2').then(data => {
-    console.log(data)
+  getMeetingData("D1PL2j9JfnyHuTlmF5Y2").then((data) => {
+    console.log(data);
   });
-  createMeeting().then(meetID =>{
+  createMeeting().then((meetID) => {
     console.log(meetID);
   });
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
@@ -65,9 +58,8 @@ function App() {
         <Switch>
           <Route path="/"></Route>
           <Route path="/eventView">
-            <EventView/>
+            <EventView />
           </Route>
-
         </Switch>
       </Router>
     </div>
