@@ -1,10 +1,10 @@
-#Timetab
+# Timetab
 ---
-##Logistics
+## Logistics
 
-###Project Team: Makronii
+### Project Team: Makronii
 
-####Team Members
+#### Team Members
 * Kyu Ri Chang - Product Owner
 * Prasana Guthy - Scrum Master \(Sprint 1\)
 * Jeffrey Liu - Developer
