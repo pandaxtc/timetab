@@ -27,4 +27,5 @@
 .weekdayContainer {
   display: flex;
   flex-wrap: nowrap;
+  user-select: none;
 }

@@ -42,3 +42,8 @@ h1 {
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
+
+.selection-area {
+  background: #4f90f22d;
+  border: 1px solid #4f90f2;
+}
