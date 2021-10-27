@@ -9,12 +9,9 @@ export const TIMEZONES = rawTimeZones.map((tz) => ({
   )}) ${tz.name.replace("_", " ")}`,
 }));
 
-export const WEEKDAYS = [
-    "SUN",
-    "MON",
-    "TUE",
-    "WED",
-    "THU",
-    "FRI",
-    "SAT"
-]
+export const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+export const TIMES = [...Array(24).keys()].map((time) => ({
+  value: time,
+  label: `${time.toString().padStart(2, "0")}:00`,
+}));

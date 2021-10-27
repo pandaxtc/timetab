@@ -24,10 +24,10 @@ const WeekdaySelector = () => {
   const savedSelectedIndexes = useRef(new Set<number>());
   const selectedIndexes = useRef(new Set<number>());
   const select = useRef(true);
-  const [t, setT] = useState(0);
+  const [_, setT] = useState(0);
 
   const onStart = ({ selection, event }: SelectionEvent) => {
-    console.log(event);
+    // console.log(event);
     if (event?.target) {
       const el = event.target as HTMLDivElement;
       select.current = !selectedIndexes.current.has(
@@ -45,7 +45,7 @@ const WeekdaySelector = () => {
       }
     }
     setT((t) => t + 1);
-    console.log(selectedIndexes.current);
+    // console.log(selectedIndexes.current);
     selection.clearSelection();
   };
 
@@ -54,18 +54,6 @@ const WeekdaySelector = () => {
       selected.map((el) => parseInt(el.getAttribute("data-key") as string))
     );
 
-    // for (const el of selected) {
-    //   if (select.current) {
-    //     selectedIndexes.current.add(
-    //       parseInt(el.getAttribute("data-key") as string)
-    //     );
-    //   } else {
-    //     selectedIndexes.current.delete(
-    //       parseInt(el.getAttribute("data-key") as string)
-    //     );
-    //   }
-    // }
-
     if (select.current) {
       selectedIndexes.current = union(savedSelectedIndexes.current, delta);
     } else {
@@ -73,7 +61,7 @@ const WeekdaySelector = () => {
     }
 
     setT((t) => t + 1);
-    console.log(selectedIndexes.current);
+    // console.log(selectedIndexes.current);
   };
 
   const onStop = () => {
@@ -92,17 +80,23 @@ const WeekdaySelector = () => {
       {WEEKDAYS.map((day, i) => {
         return (
           <div
-            // onMouseDown={(e) => {
-            //   const div = e.target as HTMLDivElement;
-            //   select.current = !selectedIndexes.current.has(
-            //     parseInt(div.getAttribute("data-key") as string)
-            //   );
-            // }}
             className={`selectable ${style.dayPill} ${
               selectedIndexes.current.has(i) ? style.dayPillSelected : ""
             } `}
+            tabIndex={0}
+            role="button"
+            aria-pressed={selectedIndexes.current.has(i)}
             key={i}
             data-key={i}
+            onKeyDown={(e) => {
+              if (e.code !== "Space" && e.code !== "Enter") return;
+              if (selectedIndexes.current.has(i)) {
+                selectedIndexes.current.delete(i);
+              } else {
+                selectedIndexes.current.add(i);
+              }
+              setT((t) => t + 1);
+            }}
           >
             {day}
           </div>
