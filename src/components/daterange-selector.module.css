@@ -1,5 +1,9 @@
 @import "../vars.css";
 
+.selector {
+  white-space: nowrap;
+}
+
 .selector input {
   appearance: none;
   margin: 0;
@@ -44,4 +48,8 @@
 
 .selector input:focus-visible + label {
   outline: #2196f3 solid 2px;
+}
+
+.dateInputContainer {
+  margin-top: 32px;
 }

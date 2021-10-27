@@ -1,16 +1,15 @@
 import React, { ChangeEvent, useState } from "react";
-import { createMeeting } from "../firebase";
-import Button from "./button";
-import TextInput from "./text-input";
+import DayPicker from "react-day-picker";
 
 import inputStyle from "./input.module.css";
 import style from "./daterange-selector.module.css";
+import WeekdaySelector from "./weekday-selector";
 
 const DaterangeSelector = () => {
-  const [type, setType] = useState("weekday");
+  const [type, setType] = useState<"weekday" | "date">("weekday");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setType(e.target.value);
+    setType(e.target.value as "weekday" | "date");
   };
 
   return (
@@ -36,8 +35,8 @@ const DaterangeSelector = () => {
         ></input>
         <label htmlFor="date">Dates</label>
       </div>
-      <div>
-        PLACEHOLDER DATEPICKER GOES HERE
+      <div className={style.dateInputContainer}>
+        {type === "weekday" ? <WeekdaySelector /> : <DayPicker />}
       </div>
     </>
   );

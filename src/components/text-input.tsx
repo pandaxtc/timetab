@@ -11,9 +11,7 @@ const TextInput = ({
 }) => {
   return (
     <>
-      <div className={style.inputHeader}>
-        <label>{label}</label>
-      </div>
+      <label className={style.inputHeader}>{label}</label>
       <input className={style.textInput} placeholder={placeholder}></input>
     </>
   );

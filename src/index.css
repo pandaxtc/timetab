@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-@import './vars.css';
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+@import "./vars.css";
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -13,11 +13,32 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 h1 {
   font-size: 64px;
   margin-bottom: 32px;
+}
+
+.DayPicker-Month {
+  margin: 0 !important;
+}
+
+.DayPicker-NavButton {
+  top: 0;
+  right: 0;
+}
+
+.DayPicker-Day--today {
+  color: var(--accent-color);
+}
+
+.DayPicker-Caption > div {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
