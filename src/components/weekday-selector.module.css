@@ -1,0 +1,31 @@
+@import "../vars.css";
+
+.dayPill {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 42px;
+  height: 32px;
+  border-radius: 8px;
+
+  font-size: 11px;
+  font-weight: bold;
+  background: rgba(94, 119, 255, 0.1);
+  color: var(--accent-color);
+}
+
+.dayPill:not(:last-child) {
+  margin-right: 8px;
+}
+
+.dayPillSelected {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.weekdayContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  user-select: none;
+}
