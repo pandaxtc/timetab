@@ -5,11 +5,16 @@ import inputStyle from "./input.module.css";
 import style from "./daterange-selector.module.css";
 import WeekdaySelector from "./weekday-selector";
 
-const DaterangeSelector = () => {
-  const [type, setType] = useState<"weekday" | "date">("weekday");
+const DaterangeSelector = ({
+  type,
+  typeChange
+}:{
+  type: "weekday" | "date"
+  typeChange : (type: "weekday" | "date") => void;
+}) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setType(e.target.value as "weekday" | "date");
+    typeChange(e.target.value as "weekday" | "date");
   };
 
   return (

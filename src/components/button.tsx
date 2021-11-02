@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, MouseEventHandler } from "react";
 
 import style from "./button.module.css";
 
@@ -9,7 +9,7 @@ const Button = ({
 }: {
   label: string;
   type?: "button" | "submit" | "reset";
-  onClick: () => void;
+  onClick: (() => void)| ((e : React.MouseEvent<HTMLElement>) => void);
 }) => {
   return (
     <button type={type} className={style.textButton} onClick={onClick}>

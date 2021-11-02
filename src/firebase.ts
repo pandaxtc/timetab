@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app'
 import { getFirestore } from "firebase/firestore"
-import { collection, doc, getDoc, addDoc } from "firebase/firestore";
+import { collection, doc, getDoc, addDoc, deleteDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,7 +29,8 @@ export async function getMeetingData(meetID:string){
     return meeting.data();
 }
 
-export async function createMeeting():Promise<string>{
-  const docRef = await addDoc(collection(db, "Meetings"), {});
+export async function createMeeting(initialData:{[x:string]: any}):Promise<string>{
+  const docRef = await addDoc(collection(db, "Meetings"), initialData);
+  //const userRef = await addDoc(collection(db, "Meetings", docRef.id, "Users"), {});
   return docRef.id;
 }
