@@ -22,6 +22,10 @@ h1 {
   margin-bottom: 32px;
 }
 
+h3{
+  font-size: 32px;
+}
+
 .DayPicker-Month {
   margin: 0 !important;
 }

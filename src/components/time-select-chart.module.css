@@ -1,0 +1,37 @@
+.table{
+    border-collapse: collapse;
+    user-select: none;
+    overflow: auto;
+    position: relative;
+}
+
+.half_hr{
+  border-right: 2px dotted #d3d3d3 ;
+  border-bottom: 2px solid var(--accent-color);
+  border-top: 2px solid var(--accent-color);
+  height: 50px;
+}
+
+.half_hr:nth-child(2){
+  border-left: 2px solid var(--accent-color);
+}
+
+.hr{
+  border-bottom: 2px solid var(--accent-color);
+  border-right: 2px solid gray;
+  border-top: 2px solid var(--accent-color);
+}
+
+.hr:last-child{
+  border-right: 2px solid var(--accent-color);
+}
+
+.selected{
+    background: hotpink;
+} 
+
+.row_label{
+  left:0;
+  position: sticky;
+}
+

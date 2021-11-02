@@ -1,0 +1,36 @@
+.textInput {
+  width: 100%;
+  max-width: 450px;
+  height: 42px;
+  padding: 0px 12px;
+
+  background: #ffffff;
+  border: 1px solid var(--accent-color);
+  box-sizing: border-box;
+  border-radius: 8px;
+
+  font-family: Inter;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+
+  color: var(--primary-text-color);
+}
+
+.invalidTextInput {
+  border: 2px solid #f44336;
+}
+
+.textInput:focus {
+  outline: none;
+  border: 2px solid var(--accent-color);
+}
+
+.textInput::placeholder {
+  color: var(--weak-text-color);
+}
+
+.loginButton{
+    padding-top: 14px;
+}
+
