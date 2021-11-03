@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent, HtmlHTMLAttributes } from "react";
+import React, { useState, useRef, ChangeEvent, HtmlHTMLAttributes, forwardRef } from "react";
 import { createMeeting } from "../firebase";
 import Button from "./button";
 import DaterangeSelector from "./daterange-selector";
@@ -6,11 +6,12 @@ import TextInput from "./text-input";
 
 import "../vars.css";
 import style from "./create-view.module.css";
+import weekdayStyle from "./weekday-selector.module.css"
 import DropdownInput from "./dropdown-input"; 
 import { TIMES, TIMEZONES } from "../constants"; 
 
 
-  const CreateView = () => {
+  const CreateView = ()=> {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     interface Time{
@@ -23,21 +24,25 @@ import { TIMES, TIMEZONES } from "../constants";
     const [eventType, setEventType] = useState<"weekday" | "date">("weekday");
     const [startTime, setStartTime] = useState<Time | null>(null);
     const [endTime, setEndTime] = useState<Time | null>(null);
+    const selectedDates = useRef<Set<number>>(new Set<number>());
     
 
-    const createEvent = (e : React.MouseEvent<HTMLElement>) =>{
+    const createEvent = async (e : React.MouseEvent<HTMLElement>) =>{
       e.preventDefault()
-      createMeeting({
+
+      let dates:Array<string> = [];
+      for (const ele of document.getElementsByClassName(weekdayStyle.dayPillSelected)){
+        dates.push(ele.innerHTML);
+      }
+
+      await createMeeting({
+        "name": eventName,
+        "type": eventType,
         "tz" : timeZone,
         "startHour" : startTime?.value,
         "endHour" : endTime?.value,
-        "type" : eventType
+        "dates" : dates,
       });
-      console.log(timeZone)
-      console.log(startTime)
-      console.log(endTime)
-      console.log(eventName)
-      console.log(eventType)
     }
 
   return (
@@ -54,6 +59,7 @@ import { TIMES, TIMEZONES } from "../constants";
       <DaterangeSelector 
         type={eventType} 
         typeChange={setEventType}
+        selectedRef={selectedDates}
       ></DaterangeSelector>
       <DropdownInput
         onChange={setTimeZone}
