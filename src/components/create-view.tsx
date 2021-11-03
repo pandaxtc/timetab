@@ -59,7 +59,6 @@ import { TIMES, TIMEZONES } from "../constants";
       <DaterangeSelector 
         type={eventType} 
         typeChange={setEventType}
-        selectedRef={selectedDates}
       ></DaterangeSelector>
       <DropdownInput
         onChange={setTimeZone}
