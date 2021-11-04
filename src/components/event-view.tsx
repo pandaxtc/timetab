@@ -34,7 +34,7 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 			</div>
 			}
 			{auth &&
-			<TimeSelectChart label="Your Availability" column_labels={TIMES.map((time)=>time.label)} row_labels={WEEKDAYS} selectable={true}/>
+			<TimeSelectChart table_id="selection" label="Your Availability" column_labels={TIMES.map((time)=>time.label)} row_labels={WEEKDAYS} selectable={true}/>
 			}
 			<TimeSelectChart label="Your Group's Availability"column_labels={TIMES.map((time)=>time.label)} row_labels={WEEKDAYS} selectable={false}/>
 		</form>
