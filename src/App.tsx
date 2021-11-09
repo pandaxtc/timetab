@@ -13,7 +13,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/:meetingID">
-            <EventView meetingID="test"/>
+            <EventView meetingID="TEST"/>
           </Route>
           <Route path="/">
             <CreateView />

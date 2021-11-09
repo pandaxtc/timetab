@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app'
 import { getFirestore,QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore"
-import { collection, doc, getDoc, addDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDoc, addDoc, setDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -56,6 +56,15 @@ export async function getMeetingData(meetID: string) {
 
 export async function createMeeting(initialData: { [x: string]: any }): Promise<string> {
   const docRef = await addDoc(collection(db, "Meetings"), initialData);
-  //const userRef = await addDoc(collection(db, "Meetings", docRef.id, "Users"), {});
   return docRef.id;
+}
+
+export async function setUserInfo(meetID:string, name:string, intervals:Map<number,Array<TimeInterval>>){
+  console.log(meetID)
+  let fbMap = new Map<number,any>();
+  intervals.forEach((value, key)=>{
+    fbMap.set(key,value.map((interval)=>{return TimeIntervalConverter.toFirestore(interval)}));
+  });
+  
+  await setDoc(doc(db, "Meetings", meetID, "Users", name), {'intervals':Object.fromEntries(fbMap)});
 }

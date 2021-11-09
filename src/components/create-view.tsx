@@ -41,7 +41,7 @@ import { TIMES, TIMEZONES } from "../constants";
         "tz" : timeZone,
         "startHour" : startTime?.value,
         "endHour" : endTime?.value,
-        "dates" : dates,
+        "days" : dates,
       });
     }
 

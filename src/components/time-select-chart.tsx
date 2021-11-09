@@ -3,7 +3,6 @@ import SelectionArea, { Behaviour, OverlapMode, SelectionEvent } from "@viselect
 import style from "./time-select-chart.module.css"
 import Button from "./button";
 import SaveDeleteSelector from './save-delete-selector';
-import { TimeInterval } from '../firebase';
 
 function union<T>(setA: Set<T>, setB: Set<T>) {
     let _union = new Set(setA);
@@ -27,12 +26,14 @@ const TimeSelectChart = ({
     column_labels,
     selectable,
     table_id,
+    addTimes
 }: {
-    label: string;
+    label: string
     row_labels: Array<String>
     column_labels: Array<String>
     selectable: boolean
     table_id?: string
+    addTimes?: (e: React.MouseEvent<HTMLElement>)=> void
 }) => {
     const savedSelectedIndexes = useRef(new Set<string>());
     const selectedIndexes = useRef(new Set<string>());
@@ -40,38 +41,7 @@ const TimeSelectChart = ({
     const [_, setT] = useState(0);
 
 
-    const addTimes = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-        if (table_id){
-            let table = document.getElementById(table_id)
-            let rows = table!.querySelector('tbody')?.getElementsByTagName('tr')
-            let intervals: Array<Array<TimeInterval>> = [...Array(rows?.length)].map((_) => [])
-            let i = 0;
-            for( const row of rows!){
-                let data_entries = row.childNodes.values() as IterableIterator<Element>
-                let startTime: number | undefined = undefined;
-                let endTime: number | undefined = undefined; 
-                for(const entry of data_entries){
-                    if (!entry.classList.contains(style.selected)) continue;
-                    let entry_start = parseFloat(entry.getAttribute('data-time-start')!) ; 
-                    if(startTime === undefined){
-                        startTime = entry_start;
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    } else if (entry_start === endTime){
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    }else{
-                        intervals[i].push(new TimeInterval(startTime!,endTime!));
-                        startTime = entry_start;
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    }
-                }
-                if(startTime != undefined) intervals[i].push(new TimeInterval(startTime,endTime!));
-                i++;
-            }
-            console.log(intervals)
-        }
-    };
-
+    
 
     const onStart = ({ selection, event }: SelectionEvent) => {
         if (event?.target) {
@@ -167,7 +137,7 @@ const TimeSelectChart = ({
                 </table>
             </SelectionArea>
             <div style={{"display": 'flex'}}>
-                <Button label="Save" type="submit" onClick={addTimes}></Button>
+                <Button label="Save" type="submit" onClick={addTimes!}></Button>
                 <div style={{'marginLeft': 'auto'}}>
                     <SaveDeleteSelector 
                         onChange={(buttonVal:string)=>{
