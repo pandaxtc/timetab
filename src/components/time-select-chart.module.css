@@ -27,7 +27,7 @@
 }
 
 .selected{
-    background: hotpink;
+    background: hotpink; /*replace with gradient?*/
 } 
 
 .row_label{

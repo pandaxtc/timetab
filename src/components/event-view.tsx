@@ -1,10 +1,10 @@
-import { ChangeEvent, useState } from "react";
-import { getMeetingData, setUserInfo, TimeInterval } from "../firebase";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
+import { getAllUserData, getMeetingData, setUserInfo, TimeInterval } from "../firebase";
 import {TIMES, WEEKDAYS} from "../constants"
 
 import style from "./event-view.module.css"
 import chartStyle from "./time-select-chart.module.css"
-import TimeSelectChart from "./time-select-chart";
+import {TimeSelectChart, TimeDisplayChart} from "./time-select-chart";
 import Button from "./button";
 import TextInput from "./text-input";
 
@@ -13,11 +13,30 @@ import TextInput from "./text-input";
 const EventView = ({ meetingID }: { meetingID: string }) => {
 	const [auth, setAuth] = useState(false);
 	const [user, setUser] = useState("");
+	const [meetingData,setMeetingData] = useState<any>(null);
+	const [userData, setUserData] = useState<any>(null);
 	let selectableTableID = "selection"
 
 	const handleLogin = () =>{
+		if (!meetingData || ! userData){
+			alert("Data not finished loading, Try again Later");
+			return;
+		}
 		setAuth(true);
 	};
+
+	useEffect(() => {
+		const setData = async() =>{
+			let meetingDataPromise = getMeetingData(meetingID);
+			let userDataPromise = getAllUserData(meetingID);
+			let [meetingDataRes, userDataRes] = await Promise.all([meetingDataPromise, userDataPromise]);
+			if (meetingDataRes){
+				setMeetingData(meetingDataRes);
+				setUserData(userDataRes);
+			}
+		}
+		setData();
+	}, []);
 
 
 	const addTimes = async (e: React.MouseEvent<HTMLElement>) => {
@@ -51,17 +70,17 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
                 i++;
             }
 			setUserInfo(meetingID,user,intervals);
-            console.log(user,intervals)
         }
     };
 
-
+	let timeArr = Array.from({length:meetingData?.endHour- meetingData?.startHour+ 1}, 
+				  (_ , time) => {return `${(time + meetingData.startHour).toString().padStart(2, "0")}:00`} );
 	return (
 		<form>
 			<h2>
 				time<span style={{ color: "var(--accent-color)" }}>tab</span>
 			</h2>
-			<h1>{meetingID}</h1>
+			<h1>{meetingData?.name}</h1>
 			{!auth &&
 			<div style={{display:"flex", gap:"50px"}}>
 				<div>
@@ -81,17 +100,17 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 			<TimeSelectChart 
 				table_id={selectableTableID}
 				label="Your Availability" 
-				column_labels={TIMES.map((time)=>time.label)} 
-				row_labels={WEEKDAYS} 
-				selectable={true}
+				column_labels={timeArr} 
+				row_labels={meetingData? meetingData.days : []} 
 				addTimes={addTimes}
 			/>
 			}
-			<TimeSelectChart 
+			<TimeDisplayChart
+				table_id="displayTable"
 				label="Your Group's Availability"
-				column_labels={TIMES.map((time)=>time.label)} 
-				row_labels={WEEKDAYS} 
-				selectable={false}
+				column_labels={timeArr} 
+				row_labels={meetingData? meetingData.days : []} 
+				userData={userData}
 			/>
 		</form>
 		/*

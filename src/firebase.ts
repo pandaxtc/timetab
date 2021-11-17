@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app'
 import { getFirestore,QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore"
-import { collection, doc, getDoc, addDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, addDoc, setDoc, getDocs} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,17 +31,29 @@ export class TimeInterval {
 
 //custom TimeInterval converter for firebase
 const TimeIntervalConverter = {
-  toFirestore: (interval:TimeInterval) => {
-      return {
-          start: interval.start,
-          end: interval.end,
-          };
+  toFirestore: (intervals:Map<number,Array<TimeInterval>>) => {
+    let fbMap = new Map<number,any>();
+    intervals.forEach((intervalArr, rowNum)=>{
+    fbMap.set(rowNum,intervalArr.map((interval)=>{
+      return {"start": interval.start,
+              "end" : interval.end}
+      }));
+    });
+    return Object.fromEntries(fbMap);
   },
-  fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
-      const data = snapshot.data(options);
-      return new TimeInterval(data.start, data.end);
+  fromFireStore: (snapsnot:QueryDocumentSnapshot)=>{
+    let data = snapsnot.data();
+    let timeIntervals = new Map<number,Array<TimeInterval>>();
+    for(const rowNum in data.intervals){
+      timeIntervals.set(parseInt(rowNum), data.intervals[rowNum].map((interval:{start:number, end:number})=>{
+        return new TimeInterval(interval.start,interval.end);
+      }));
+    }
+    data.intervals = timeIntervals;
+    return data;
   }
-};
+}
+
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const db = getFirestore();
@@ -54,17 +66,21 @@ export async function getMeetingData(meetID: string) {
   return meeting.data();
 }
 
+export async function getAllUserData(meetID: string) {
+  const userData = await getDocs(collection(db, "Meetings", meetID, "Users"));
+  let parsedUserData = new Map<string,any>();
+  userData.forEach((userDoc)=>{
+    parsedUserData.set(userDoc.id,TimeIntervalConverter.fromFireStore(userDoc));
+  });
+  return parsedUserData;
+}
+
+
 export async function createMeeting(initialData: { [x: string]: any }): Promise<string> {
   const docRef = await addDoc(collection(db, "Meetings"), initialData);
   return docRef.id;
 }
 
 export async function setUserInfo(meetID:string, name:string, intervals:Map<number,Array<TimeInterval>>){
-  console.log(meetID)
-  let fbMap = new Map<number,any>();
-  intervals.forEach((value, key)=>{
-    fbMap.set(key,value.map((interval)=>{return TimeIntervalConverter.toFirestore(interval)}));
-  });
-  
-  await setDoc(doc(db, "Meetings", meetID, "Users", name), {'intervals':Object.fromEntries(fbMap)});
+  await setDoc(doc(db, "Meetings", meetID, "Users", name), {'intervals':TimeIntervalConverter.toFirestore(intervals)});
 }

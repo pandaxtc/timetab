@@ -15,3 +15,5 @@ export const TIMES = [...Array(24).keys()].map((time) => ({
   value: time,
   label: `${time.toString().padStart(2, "0")}:00`,
 }));
+
+export const SUPPORTED_TIME_INCREMENT = 0.5;
