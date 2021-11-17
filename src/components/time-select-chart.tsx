@@ -5,7 +5,6 @@ import Button from "./button";
 import SaveDeleteSelector from './save-delete-selector';
 import { SUPPORTED_TIME_INCREMENT } from '../constants';
 import { TimeInterval } from '../firebase';
-import { getAllUserData } from '../firebase';
 
 function union<T>(setA: Set<T>, setB: Set<T>) {
     let _union = new Set(setA);
@@ -192,6 +191,7 @@ export const TimeDisplayChart = ({
                         data-key={`${key}h`}
                         data-time-start={hour}
                         data-time-end={hour + SUPPORTED_TIME_INCREMENT}
+                        style={{"background" : "white"}}
                     >
                     </td>
                     <td
@@ -199,6 +199,7 @@ export const TimeDisplayChart = ({
                         data-key={key}
                         data-time-start={hour + SUPPORTED_TIME_INCREMENT}
                         data-time-end={hour + 1}
+                        style={{"background" : "white"}}
                     >
                     </td>
                 </React.Fragment>
@@ -213,7 +214,7 @@ export const TimeDisplayChart = ({
     return (
         <div style={{ "overflow": "auto" }}>
             <h3>{label}</h3>
-            <table id={table_id} className={style.table}>
+            <table key={new Date().getTime()} id={table_id} className={style.table}>
                 <thead >
                     <tr>
                         <th></th>

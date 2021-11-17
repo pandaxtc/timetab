@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useState, useRef } from "react";
-import { getAllUserData, getMeetingData, setUserInfo, TimeInterval } from "../firebase";
-import {TIMES, WEEKDAYS} from "../constants"
+import { setAllUserDataListener, getMeetingData, setUserInfo, TimeInterval } from "../firebase";
+import { TIMES, WEEKDAYS } from "../constants"
 
 import style from "./event-view.module.css"
 import chartStyle from "./time-select-chart.module.css"
-import {TimeSelectChart, TimeDisplayChart} from "./time-select-chart";
+import { TimeSelectChart, TimeDisplayChart } from "./time-select-chart";
 import Button from "./button";
 import TextInput from "./text-input";
 
@@ -13,12 +13,12 @@ import TextInput from "./text-input";
 const EventView = ({ meetingID }: { meetingID: string }) => {
 	const [auth, setAuth] = useState(false);
 	const [user, setUser] = useState("");
-	const [meetingData,setMeetingData] = useState<any>(null);
+	const [meetingData, setMeetingData] = useState<any>(null);
 	const [userData, setUserData] = useState<any>(null);
 	let selectableTableID = "selection"
 
-	const handleLogin = () =>{
-		if (!meetingData || ! userData){
+	const handleLogin = () => {
+		if (!meetingData || !userData) {
 			alert("Data not finished loading, Try again Later");
 			return;
 		}
@@ -26,55 +26,51 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 	};
 
 	useEffect(() => {
-		const setData = async() =>{
-			let meetingDataPromise = getMeetingData(meetingID);
-			let userDataPromise = getAllUserData(meetingID);
-			let [meetingDataRes, userDataRes] = await Promise.all([meetingDataPromise, userDataPromise]);
-			if (meetingDataRes){
-				setMeetingData(meetingDataRes);
-				setUserData(userDataRes);
-			}
+		const setData = async () => {
+			let meetData = await getMeetingData(meetingID);
+			setMeetingData(meetData);
+			setAllUserDataListener(meetingID, setUserData)
 		}
 		setData();
 	}, []);
 
 
 	const addTimes = async (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
+		e.preventDefault();
 		let selectionTable = document.getElementById(selectableTableID);
-        if (selectionTable){
-            let rows = selectionTable!.querySelector('tbody')?.getElementsByTagName('tr')
-            let intervals = new Map<number,Array<TimeInterval>>();
-            let i = 0;
-            for( const row of rows!){
-                let data_entries = row.childNodes.values() as IterableIterator<Element>
-                let startTime: number | undefined = undefined;
-                let endTime: number | undefined = undefined; 
-				let currInterval:Array<TimeInterval> = [];
-                for(const entry of data_entries){
-                    if (!entry.classList.contains(chartStyle.selected)) continue;
-                    let entry_start = parseFloat(entry.getAttribute('data-time-start')!) ; 
-                    if(startTime === undefined){
-                        startTime = entry_start;
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    } else if (entry_start === endTime){
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    }else{
-                        currInterval.push(new TimeInterval(startTime!,endTime!));
-                        startTime = entry_start;
-                        endTime = parseFloat(entry.getAttribute('data-time-end')!) ; 
-                    }
-                }
-                if(startTime != undefined) currInterval.push(new TimeInterval(startTime,endTime!));
-				intervals.set(i,currInterval);
-                i++;
-            }
-			setUserInfo(meetingID,user,intervals);
-        }
-    };
+		if (selectionTable) {
+			let rows = selectionTable!.querySelector('tbody')?.getElementsByTagName('tr')
+			let intervals = new Map<number, Array<TimeInterval>>();
+			let i = 0;
+			for (const row of rows!) {
+				let data_entries = row.childNodes.values() as IterableIterator<Element>
+				let startTime: number | undefined = undefined;
+				let endTime: number | undefined = undefined;
+				let currInterval: Array<TimeInterval> = [];
+				for (const entry of data_entries) {
+					if (!entry.classList.contains(chartStyle.selected)) continue;
+					let entry_start = parseFloat(entry.getAttribute('data-time-start')!);
+					if (startTime === undefined) {
+						startTime = entry_start;
+						endTime = parseFloat(entry.getAttribute('data-time-end')!);
+					} else if (entry_start === endTime) {
+						endTime = parseFloat(entry.getAttribute('data-time-end')!);
+					} else {
+						currInterval.push(new TimeInterval(startTime!, endTime!));
+						startTime = entry_start;
+						endTime = parseFloat(entry.getAttribute('data-time-end')!);
+					}
+				}
+				if (startTime != undefined) currInterval.push(new TimeInterval(startTime, endTime!));
+				intervals.set(i, currInterval);
+				i++;
+			}
+			setUserInfo(meetingID, user, intervals);
+		}
+	};
 
-	let timeArr = Array.from({length:meetingData?.endHour- meetingData?.startHour+ 1}, 
-				  (_ , time) => {return `${(time + meetingData.startHour).toString().padStart(2, "0")}:00`} );
+	let timeArr = Array.from({ length: meetingData?.endHour - meetingData?.startHour + 1 },
+		(_, time) => { return `${(time + meetingData.startHour).toString().padStart(2, "0")}:00` });
 	return (
 		<form>
 			<h2>
@@ -82,34 +78,34 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 			</h2>
 			<h1>{meetingData?.name}</h1>
 			{!auth &&
-			<div style={{display:"flex", gap:"50px"}}>
-				<div>
-					<TextInput 
-						label="Your Name" 
-						placeholder="Sammy Slug" 
-						className={style.textInput}
-						onChange={(value:string)=>{setUser(value.toLowerCase());}}
-					></TextInput>
+				<div style={{ display: "flex", gap: "50px" }}>
+					<div>
+						<TextInput
+							label="Your Name"
+							placeholder="Sammy Slug"
+							className={style.textInput}
+							onChange={(value: string) => { setUser(value.toLowerCase()); }}
+						></TextInput>
+					</div>
+					<div className={style.loginButton}>
+						<Button label="Login" type="submit" onClick={handleLogin}></Button>
+					</div>
 				</div>
-				<div className={style.loginButton}>
-					<Button label="Login" type="submit" onClick={handleLogin}></Button>
-				</div>
-			</div>
 			}
 			{auth &&
-			<TimeSelectChart 
-				table_id={selectableTableID}
-				label="Your Availability" 
-				column_labels={timeArr} 
-				row_labels={meetingData? meetingData.days : []} 
-				addTimes={addTimes}
-			/>
+				<TimeSelectChart
+					table_id={selectableTableID}
+					label="Your Availability"
+					column_labels={timeArr}
+					row_labels={meetingData ? meetingData.days : []}
+					addTimes={addTimes}
+				/>
 			}
 			<TimeDisplayChart
 				table_id="displayTable"
 				label="Your Group's Availability"
-				column_labels={timeArr} 
-				row_labels={meetingData? meetingData.days : []} 
+				column_labels={timeArr}
+				row_labels={meetingData ? meetingData.days : []}
 				userData={userData}
 			/>
 		</form>
