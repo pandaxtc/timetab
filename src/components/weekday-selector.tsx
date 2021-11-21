@@ -3,22 +3,8 @@ import { useRef, useState } from "react";
 
 import style from "./weekday-selector.module.css";
 import { WEEKDAYS } from "../constants";
+import { difference,union } from "../misc-functions";
 
-function union<T>(setA: Set<T>, setB: Set<T>) {
-  let _union = new Set(setA);
-  for (let elem of setB) {
-    _union.add(elem);
-  }
-  return _union;
-}
-
-function difference<T>(setA: Set<T>, setB: Set<T>) {
-  let _difference = new Set(setA);
-  for (let elem of setB) {
-    _difference.delete(elem);
-  }
-  return _difference;
-}
 
 const WeekdaySelector = () => {
   const savedSelectedIndexes = useRef(new Set<number>());

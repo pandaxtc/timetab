@@ -68,6 +68,7 @@ export async function getMeetingData(meetID: string) {
   return meeting.data();
 }
 
+
 export async function setAllUserDataListener(meetID: string, callBack: any) {
   const q = query(collection(db, "Meetings", meetID, "Users"));
   onSnapshot(q, (userData) => {

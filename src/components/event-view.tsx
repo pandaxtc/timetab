@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { setAllUserDataListener, getMeetingData, setUserInfo, TimeInterval } from "../firebase";
-import { TIMES, WEEKDAYS } from "../constants"
 
 import style from "./event-view.module.css"
 import chartStyle from "./time-select-chart.module.css"
 import { TimeSelectChart, TimeDisplayChart } from "./time-select-chart";
 import Button from "./button";
 import TextInput from "./text-input";
-
+import { tableRowforEach } from "../misc-functions";
+import { SUPPORTED_TIME_INCREMENT } from "../constants";
 
 
 const EventView = ({ meetingID }: { meetingID: string }) => {
@@ -15,12 +15,25 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 	const [user, setUser] = useState("");
 	const [meetingData, setMeetingData] = useState<any>(null);
 	const [userData, setUserData] = useState<any>(null);
+	const initialTimeSelection = useRef(new Set<string>());
 	let selectableTableID = "selection"
+	let displayTableID = "displayTable"
 
 	const handleLogin = () => {
 		if (!meetingData || !userData) {
 			alert("Data not finished loading, Try again Later");
 			return;
+		}
+		if (userData?.get(user)) {
+			let authUser = userData.get(user);
+			tableRowforEach(displayTableID, (row, rowIndex) => {
+				authUser.intervals.get(rowIndex).forEach((interval: TimeInterval) => {
+					for (let i = interval.start; i < interval.end; i += SUPPORTED_TIME_INCREMENT) {
+						let tableEntry = row?.querySelector(`[data-time-start="${i}"]`) as HTMLElement;
+						initialTimeSelection.current?.add(tableEntry.dataset.key as string)
+					}
+				});
+			});
 		}
 		setAuth(true);
 	};
@@ -29,7 +42,7 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 		const setData = async () => {
 			let meetData = await getMeetingData(meetingID);
 			setMeetingData(meetData);
-			setAllUserDataListener(meetingID, setUserData)
+			setAllUserDataListener(meetingID, setUserData);
 		}
 		setData();
 	}, []);
@@ -37,36 +50,30 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 
 	const addTimes = async (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
-		let selectionTable = document.getElementById(selectableTableID);
-		if (selectionTable) {
-			let rows = selectionTable!.querySelector('tbody')?.getElementsByTagName('tr')
-			let intervals = new Map<number, Array<TimeInterval>>();
-			let i = 0;
-			for (const row of rows!) {
-				let data_entries = row.childNodes.values() as IterableIterator<Element>
-				let startTime: number | undefined = undefined;
-				let endTime: number | undefined = undefined;
-				let currInterval: Array<TimeInterval> = [];
-				for (const entry of data_entries) {
-					if (!entry.classList.contains(chartStyle.selected)) continue;
-					let entry_start = parseFloat(entry.getAttribute('data-time-start')!);
-					if (startTime === undefined) {
-						startTime = entry_start;
-						endTime = parseFloat(entry.getAttribute('data-time-end')!);
-					} else if (entry_start === endTime) {
-						endTime = parseFloat(entry.getAttribute('data-time-end')!);
-					} else {
-						currInterval.push(new TimeInterval(startTime!, endTime!));
-						startTime = entry_start;
-						endTime = parseFloat(entry.getAttribute('data-time-end')!);
-					}
+		let intervals = new Map<number, Array<TimeInterval>>();
+		tableRowforEach(selectableTableID, (row, rowIndex) => {
+			let data_entries = row.childNodes.values() as IterableIterator<Element>
+			let startTime: number | undefined = undefined;
+			let endTime: number | undefined = undefined;
+			let currInterval: Array<TimeInterval> = [];
+			for (const entry of data_entries) {
+				if (!entry.classList.contains(chartStyle.selected)) continue;
+				let entry_start = parseFloat(entry.getAttribute('data-time-start')!);
+				if (startTime === undefined) {
+					startTime = entry_start;
+					endTime = parseFloat(entry.getAttribute('data-time-end')!);
+				} else if (entry_start === endTime) {
+					endTime = parseFloat(entry.getAttribute('data-time-end')!);
+				} else {
+					currInterval.push(new TimeInterval(startTime!, endTime!));
+					startTime = entry_start;
+					endTime = parseFloat(entry.getAttribute('data-time-end')!);
 				}
-				if (startTime != undefined) currInterval.push(new TimeInterval(startTime, endTime!));
-				intervals.set(i, currInterval);
-				i++;
 			}
-			setUserInfo(meetingID, user, intervals);
-		}
+			if (startTime != undefined) currInterval.push(new TimeInterval(startTime, endTime!));
+			intervals.set(rowIndex, currInterval);
+		});
+		setUserInfo(meetingID, user, intervals);
 	};
 
 	let timeArr = Array.from({ length: meetingData?.endHour - meetingData?.startHour + 1 },
@@ -99,10 +106,11 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 					column_labels={timeArr}
 					row_labels={meetingData ? meetingData.days : []}
 					addTimes={addTimes}
+					selectedIndexes={initialTimeSelection}
 				/>
 			}
 			<TimeDisplayChart
-				table_id="displayTable"
+				table_id={displayTableID}
 				label="Your Group's Availability"
 				column_labels={timeArr}
 				row_labels={meetingData ? meetingData.days : []}
