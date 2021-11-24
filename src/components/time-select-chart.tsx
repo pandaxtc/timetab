@@ -26,19 +26,32 @@ export const TimeSelectChart = ({
     const savedSelectedIndexes = useRef(selectedIndexes.current);
     const select = useRef(true);
     const [_, setT] = useState(0);
-    var timeout = null;
+
+    let timeout = null;
 
     const onBeforeStart = ({ selection, event }: SelectionEvent) => {
-        if (event?.type == "touchstart") {
+        if (event instanceof TouchEvent) {
+            const el = event.target as HTMLDivElement;
             if(timeout != null){
                 clearTimeout(timeout);
                 timeout = null;
             }
-            timeout = setTimeout(() => {
-                
+            
+            function postTimeout() {
                 selection.trigger(event);
                 timeout = null;
-            }, 500)
+            }
+
+            function cancelTimeout() {
+                if (timeout != null) {
+                    clearTimeout(timeout);
+                }
+                el.parentElement.parentElement.parentElement.parentElement.removeEventListener("scroll", cancelTimeout);
+            }
+
+            timeout = setTimeout(postTimeout, 500);
+
+            el.parentElement.parentElement.parentElement.parentElement.addEventListener("scroll", cancelTimeout);
             return false;
         }
     }

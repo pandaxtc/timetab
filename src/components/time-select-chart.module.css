@@ -1,8 +1,7 @@
 .table{
     border-collapse: collapse;
     user-select: none;
-    overflow-y: auto;
-    overflow-x: scroll;
+    overflow: auto;
     position: relative;
 }
 
