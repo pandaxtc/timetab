@@ -1,7 +1,8 @@
 .table{
     border-collapse: collapse;
     user-select: none;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: scroll;
     position: relative;
 }
 
@@ -27,7 +28,7 @@
 }
 
 .selected{
-    background: hotpink; /*replace with gradient?*/
+    background: rgb(255, 154, 59); /*replace with gradient?*/
 } 
 
 .row_label{

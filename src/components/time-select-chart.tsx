@@ -6,7 +6,7 @@ import SaveDeleteSelector from './save-delete-selector';
 import { SUPPORTED_TIME_INCREMENT } from '../constants';
 import { TimeInterval } from '../firebase';
 import { tableRowforEach,union,difference } from '../misc-functions';
-
+import * as Rainbow from 'rainbowvis.js'
 
 export const TimeSelectChart = ({
     label,
@@ -26,6 +26,22 @@ export const TimeSelectChart = ({
     const savedSelectedIndexes = useRef(selectedIndexes.current);
     const select = useRef(true);
     const [_, setT] = useState(0);
+    var timeout = null;
+
+    const onBeforeStart = ({ selection, event }: SelectionEvent) => {
+        if (event?.type == "touchstart") {
+            if(timeout != null){
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            timeout = setTimeout(() => {
+                
+                selection.trigger(event);
+                timeout = null;
+            }, 500)
+            return false;
+        }
+    }
 
     const onStart = ({ selection, event }: SelectionEvent) => {
         if (event?.target) {
@@ -58,6 +74,10 @@ export const TimeSelectChart = ({
         setT((t) => t + 1);
     };
     const onStop = () => {
+        if (timeout != null) {
+            clearTimeout(timeout);
+            timeout = null;
+        }
         savedSelectedIndexes.current = selectedIndexes.current;
     };
 
@@ -102,6 +122,7 @@ export const TimeSelectChart = ({
         <>
             <SelectionArea
                 className={style.table}
+                onBeforeStart={onBeforeStart}
                 onStart={onStart}
                 onMove={onMove}
                 onStop={onStop}
@@ -147,6 +168,7 @@ export const TimeDisplayChart = ({
     table_id: string
     userData: Map<string, any> | null
 }) => {
+    var myGradient = new Rainbow();
 
     useEffect(() => {
         tableKey.current += 1;
@@ -155,7 +177,9 @@ export const TimeDisplayChart = ({
                 userInfo.intervals.get(rowIndex).forEach((interval: TimeInterval) => {
                     for (let i = interval.start; i < interval.end; i += SUPPORTED_TIME_INCREMENT) {
                         let tableEntry = row?.querySelector(`[data-time-start="${i}"]`) as HTMLElement;
-                        tableEntry!.style.background = "hotpink"; // replace with gradient?
+                        // tableEntry!.style.background = 'rgba(255, 154, 59)'; // replace with gradient?
+
+                        tableEntry!.style.background = '#' + myGradient.colourAt(i);
                     }
                 });
             });
