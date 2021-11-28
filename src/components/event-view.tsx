@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { setAllUserDataListener, getMeetingData, setUserInfo, TimeInterval } from "../firebase";
+import { meetingDataInterface,allUserDataInterface } from "../firebase";
 
 import style from "./event-view.module.css"
 import chartStyle from "./time-select-chart.module.css"
@@ -13,8 +14,8 @@ import { SUPPORTED_TIME_INCREMENT } from "../constants";
 const EventView = ({ meetingID }: { meetingID: string }) => {
 	const [auth, setAuth] = useState(false);
 	const [user, setUser] = useState("");
-	const [meetingData, setMeetingData] = useState<any>(null);
-	const [userData, setUserData] = useState<any>(null);
+	const [meetingData, setMeetingData] = useState<meetingDataInterface | null>(null);
+	const [userData, setUserData] = useState<allUserDataInterface | null>(null);
 	const initialTimeSelection = useRef(new Set<string>());
 	let selectableTableID = "selection"
 	let displayTableID = "displayTable"
@@ -24,10 +25,10 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 			alert("Data not finished loading, Try again Later");
 			return;
 		}
-		if (userData?.get(user)) {
-			let authUser = userData.get(user);
+		if (userData && userData[user]) {
+			let authUser = userData[user];
 			tableRowforEach(displayTableID, (row, rowIndex) => {
-				authUser.intervals.get(rowIndex).forEach((interval: TimeInterval) => {
+				authUser.intervals.get(rowIndex)!.forEach((interval: TimeInterval) => {
 					for (let i = interval.start; i < interval.end; i += SUPPORTED_TIME_INCREMENT) {
 						let tableEntry = row?.querySelector(`[data-time-start="${i}"]`) as HTMLElement;
 						initialTimeSelection.current?.add(tableEntry.dataset.key as string)
@@ -76,8 +77,8 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
 		setUserInfo(meetingID, user, intervals);
 	};
 
-	let timeArr = Array.from({ length: meetingData?.endHour - meetingData?.startHour + 1 },
-		(_, time) => { return `${(time + meetingData.startHour).toString().padStart(2, "0")}:00` });
+	let timeArr = meetingData? Array.from({ length: meetingData.endHour - meetingData.startHour + 1 },
+		(_, time) => { return `${(time + meetingData.startHour).toString().padStart(2, "0")}:00` }) : [];
 	return (
 		<form>
 			<h2>

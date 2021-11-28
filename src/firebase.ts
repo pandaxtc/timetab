@@ -56,6 +56,23 @@ const TimeIntervalConverter = {
   }
 }
 
+export interface meetingDataInterface{
+  name:string,
+  type:string,
+  tz: string,
+  startHour: number,
+  endHour: number,
+  days: Array<string>
+}
+
+interface userDataInterface{
+  intervals: Map<number,Array<TimeInterval>>
+}
+
+export interface allUserDataInterface{
+  [user:string]: userDataInterface
+}
+
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const db = getFirestore();
@@ -65,23 +82,23 @@ const db = getFirestore();
 export async function getMeetingData(meetID: string) {
   const docRef = doc(db, "Meetings", meetID);
   const meeting = await getDoc(docRef);
-  return meeting.data();
+  return meeting.data() as meetingDataInterface;
 }
 
 
-export async function setAllUserDataListener(meetID: string, callBack: any) {
+export async function setAllUserDataListener(meetID: string, callBack: (newUserData:allUserDataInterface)=> void) {
   const q = query(collection(db, "Meetings", meetID, "Users"));
   onSnapshot(q, (userData) => {
-    let parsedUserData = new Map<string, any>();
+    let parsedUserData:allUserDataInterface = {};
     userData.forEach((userDoc) => {
-      parsedUserData.set(userDoc.id, TimeIntervalConverter.fromFireStore(userDoc));
+      parsedUserData[userDoc.id] = TimeIntervalConverter.fromFireStore(userDoc) as userDataInterface;
     })
     callBack(parsedUserData);
   });
 }
 
 
-export async function createMeeting(initialData: { [x: string]: any }): Promise<string> {
+export async function createMeeting(initialData: meetingDataInterface): Promise<string> {
   const docRef = await addDoc(collection(db, "Meetings"), initialData);
   return docRef.id;
 }

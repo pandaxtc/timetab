@@ -4,7 +4,7 @@ import style from "./time-select-chart.module.css"
 import Button from "./button";
 import SaveDeleteSelector from './save-delete-selector';
 import { SUPPORTED_TIME_INCREMENT } from '../constants';
-import { TimeInterval } from '../firebase';
+import { allUserDataInterface, TimeInterval } from '../firebase';
 import { tableRowforEach,union,difference } from '../misc-functions';
 
 
@@ -145,20 +145,21 @@ export const TimeDisplayChart = ({
     row_labels: Array<String>
     column_labels: Array<String>
     table_id: string
-    userData: Map<string, any> | null
+    userData: allUserDataInterface | null
 }) => {
 
     useEffect(() => {
         tableKey.current += 1;
         tableRowforEach(table_id, (row, rowIndex) => {
-            userData?.forEach((userInfo, _) => {
-                userInfo.intervals.get(rowIndex).forEach((interval: TimeInterval) => {
+           for (const userName in userData){
+               let userInfo = userData[userName];
+                userInfo.intervals.get(rowIndex)!.forEach((interval: TimeInterval) => {
                     for (let i = interval.start; i < interval.end; i += SUPPORTED_TIME_INCREMENT) {
                         let tableEntry = row?.querySelector(`[data-time-start="${i}"]`) as HTMLElement;
                         tableEntry!.style.background = "hotpink"; // replace with gradient?
                     }
                 });
-            });
+            };
         });
     });
 

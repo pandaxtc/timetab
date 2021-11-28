@@ -39,8 +39,8 @@ import { TIMES, TIMEZONES } from "../constants";
         "name": eventName,
         "type": eventType,
         "tz" : timeZone,
-        "startHour" : startTime?.value,
-        "endHour" : endTime?.value,
+        "startHour" : startTime? startTime.value: 0,
+        "endHour" : endTime? endTime.value : 0,
         "days" : dates,
       });
     }
