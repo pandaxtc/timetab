@@ -9,7 +9,7 @@ const Button = ({
 }: {
   label: string;
   type?: "button" | "submit" | "reset";
-  onClick: (() => void)| ((e : React.MouseEvent<HTMLElement>) => void);
+  onClick: (() => void) | ((e: React.MouseEvent<HTMLElement>) => void);
 }) => {
   return (
     <button type={type} className={style.textButton} onClick={onClick}>

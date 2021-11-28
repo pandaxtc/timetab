@@ -6,23 +6,26 @@ const TextInput = ({
   label,
   placeholder,
   className,
-  onChange
+  onChange,
 }: {
   label: string;
   placeholder: string;
-  className: string
-  onChange?: (value:string) => void;
+  className: string;
+  onChange?: (value: string) => void;
 }) => {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>{
-      if (onChange){
-        onChange(e.target.value)
-      }
-  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
+  };
   return (
     <>
       <label className={style.inputHeader}>{label}</label>
-      <input className={`${style.textInput} ${className}`} placeholder={placeholder} onChange={handleChange}>
-      </input>
+      <input
+        className={`${style.textInput} ${className}`}
+        placeholder={placeholder}
+        onChange={handleChange}
+      ></input>
     </>
   );
 };

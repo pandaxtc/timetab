@@ -7,12 +7,11 @@ import WeekdaySelector from "./weekday-selector";
 
 const DaterangeSelector = ({
   type,
-  typeChange
-}:{
-  type: "weekday" | "date"
-  typeChange : (type: "weekday" | "date") => void;
+  typeChange,
+}: {
+  type: "weekday" | "date";
+  typeChange: (type: "weekday" | "date") => void;
 }) => {
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     typeChange(e.target.value as "weekday" | "date");
   };

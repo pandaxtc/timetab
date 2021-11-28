@@ -3,8 +3,7 @@ import { useRef, useState } from "react";
 
 import style from "./weekday-selector.module.css";
 import { WEEKDAYS } from "../constants";
-import { difference,union } from "../misc-functions";
-
+import { difference, union } from "../misc-functions";
 
 const WeekdaySelector = () => {
   const savedSelectedIndexes = useRef(new Set<number>());
