@@ -14,14 +14,17 @@ import Button from "./button";
 import TextInput from "./text-input";
 import { tableRowforEach } from "../misc-functions";
 import { SUPPORTED_TIME_INCREMENT } from "../constants";
+import NotFound from "../404";
 
 const EventView = ({ meetingID }: { meetingID: string }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState("");
-  const [meetingData, setMeetingData] = useState<meetingDataInterface | null>(
-    null
-  );
-  const [userData, setUserData] = useState<allUserDataInterface | null>(null);
+  const [meetingData, setMeetingData] = useState<
+    meetingDataInterface | null | undefined
+  >(undefined);
+  const [userData, setUserData] = useState<
+    allUserDataInterface | null | undefined
+  >(undefined);
   const initialTimeSelection = useRef(new Set<string>());
   let selectableTableID = "selection";
   let displayTableID = "displayTable";
@@ -54,6 +57,12 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
   useEffect(() => {
     const setData = async () => {
       let meetData = await getMeetingData(meetingID);
+
+      if (meetData === undefined) {
+        setMeetingData(null);
+        return;
+      }
+
       setMeetingData(meetData);
       setAllUserDataListener(meetingID, setUserData);
     };
@@ -100,46 +109,58 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
       )
     : [];
   return (
-    <form>
-      <h2>
-        time<span style={{ color: "var(--accent-color)" }}>tab</span>
-      </h2>
-      <h1>{meetingData?.name}</h1>
-      {!auth && (
-        <div style={{ display: "flex", gap: "50px" }}>
-          <div>
-            <TextInput
-              label="Your Name"
-              placeholder="Sammy Slug"
-              className={style.textInput}
-              onChange={(value: string) => {
-                setUser(value.toLowerCase());
-              }}
-            ></TextInput>
-          </div>
-          <div className={style.loginButton}>
-            <Button label="Login" type="submit" onClick={handleLogin}></Button>
-          </div>
-        </div>
+    <>
+      {meetingData === null ? (
+        <NotFound></NotFound>
+      ) : (
+        <>
+          <h2>
+            time<span style={{ color: "var(--accent-color)" }}>tab</span>
+          </h2>
+          <form>
+            <h1>{meetingData?.name}</h1>
+            {!auth && (
+              <div style={{ display: "flex", gap: "50px" }}>
+                <div>
+                  <TextInput
+                    label="Your Name"
+                    placeholder="Sammy Slug"
+                    className={style.textInput}
+                    onChange={(value: string) => {
+                      setUser(value.toLowerCase());
+                    }}
+                  ></TextInput>
+                </div>
+                <div className={style.loginButton}>
+                  <Button
+                    label="Login"
+                    type="submit"
+                    onClick={handleLogin}
+                  ></Button>
+                </div>
+              </div>
+            )}
+            {auth && (
+              <TimeSelectChart
+                table_id={selectableTableID}
+                label="Your Availability"
+                column_labels={timeArr}
+                row_labels={meetingData ? meetingData.days : []}
+                addTimes={addTimes}
+                selectedIndexes={initialTimeSelection}
+              />
+            )}
+            <TimeDisplayChart
+              table_id={displayTableID}
+              label="Your Group's Availability"
+              column_labels={timeArr}
+              row_labels={meetingData ? meetingData.days : []}
+              userData={userData}
+            />
+          </form>
+        </>
       )}
-      {auth && (
-        <TimeSelectChart
-          table_id={selectableTableID}
-          label="Your Availability"
-          column_labels={timeArr}
-          row_labels={meetingData ? meetingData.days : []}
-          addTimes={addTimes}
-          selectedIndexes={initialTimeSelection}
-        />
-      )}
-      <TimeDisplayChart
-        table_id={displayTableID}
-        label="Your Group's Availability"
-        column_labels={timeArr}
-        row_labels={meetingData ? meetingData.days : []}
-        userData={userData}
-      />
-    </form>
+    </>
     /*
 		  Timetab Header
 		  Event Name

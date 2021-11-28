@@ -152,7 +152,7 @@ export const TimeDisplayChart = ({
   row_labels: Array<String>;
   column_labels: Array<String>;
   table_id: string;
-  userData: allUserDataInterface | null;
+  userData: allUserDataInterface | null | undefined;
 }) => {
   useEffect(() => {
     tableKey.current += 1;
