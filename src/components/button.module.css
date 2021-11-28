@@ -1,28 +1,28 @@
-@import '../vars.css';
+@import "../vars.css";
 
 .textButton {
-	display: block;
-	height: 40px;
-  
-	background: #EEEEEE;
-	border: 0;
-	outline: none;
-	border-radius: 8px;
-	padding: 0 14px 0 14px;
-	margin-top: 32px;
+  display: block;
+  height: 40px;
 
-	font-family: Inter;
-	font-size: 14px;
-	font-weight: bold;
-	font-style: normal;
-	text-transform: uppercase;
-	letter-spacing: 1.5px;
+  background: #eeeeee;
+  border: 0;
+  outline: none;
+  border-radius: 8px;
+  padding: 0 14px 0 14px;
+  margin-top: 32px;
+
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .textButton:focus-visible {
-	outline: #2196f3 solid 2px;
+  outline: #2196f3 solid 2px;
 }
 
 .textButton:active {
-	background: #e4e4e4;
+  background: #e4e4e4;
 }

@@ -16,7 +16,7 @@ const DropdownInput = ({
   className: string;
   label: string;
   options: any;
-  onChange?: (value:any)=>void;
+  onChange?: (value: any) => void;
   placeholder?: string;
   defaultValue?: string;
 }) => {
@@ -25,7 +25,9 @@ const DropdownInput = ({
       <label className={style.inputHeader}>{label}</label>
       <Select
         onChange={onChange}
-        defaultValue={options.find((option: any) => option.value === defaultValue)}
+        defaultValue={options.find(
+          (option: any) => option.value === defaultValue
+        )}
         placeholder={placeholder}
         styles={{
           control: (provided) => ({
