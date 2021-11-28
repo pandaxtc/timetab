@@ -31,39 +31,42 @@ export const TimeSelectChart = ({
   const select = useRef(true);
   const [_, setT] = useState(0);
 
-  let timeout = null;
+  const timeout = useRef<null | number>(null);
 
   const onBeforeStart = ({ selection, event }: SelectionEvent) => {
-    if (event instanceof TouchEvent) {
-      const el = event.target as HTMLDivElement;
-      if (timeout != null) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-
-      function postTimeout() {
-        selection.trigger(event);
-        timeout = null;
-      }
-
-      function cancelTimeout() {
-        if (timeout != null) {
-          clearTimeout(timeout);
-        }
-        el.parentElement.parentElement.parentElement.parentElement.removeEventListener(
-          "scroll",
-          cancelTimeout
-        );
-      }
-
-      timeout = setTimeout(postTimeout, 500);
-
-      el.parentElement.parentElement.parentElement.parentElement.addEventListener(
-        "scroll",
-        cancelTimeout
-      );
-      return false;
+    if (!(event instanceof TouchEvent)) {
+      return;
     }
+
+    // const el = event.target as HTMLDivElement;
+    if (timeout.current != null) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+
+    function postTimeout() {
+      selection.trigger(event);
+      timeout.current = null;
+    }
+
+    function cancelTimeout() {
+      console.log("test");
+      if (timeout.current != null) {
+        clearTimeout(timeout.current);
+      }
+      document
+        .getElementById(table_id)
+        .parentElement.removeEventListener("scroll", cancelTimeout);
+      document.removeEventListener("scroll", cancelTimeout);
+    }
+
+    timeout.current = window.setTimeout(postTimeout, 500);
+
+    document
+      .getElementById(table_id)
+      .parentElement.addEventListener("scroll", cancelTimeout);
+    document.addEventListener("scroll", cancelTimeout);
+    return false;
   };
 
   const onStart = ({ selection, event }: SelectionEvent) => {
@@ -93,9 +96,9 @@ export const TimeSelectChart = ({
     setT((t) => t + 1);
   };
   const onStop = () => {
-    if (timeout != null) {
-      clearTimeout(timeout);
-      timeout = null;
+    if (timeout.current != null) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
     }
     savedSelectedIndexes.current = selectedIndexes.current;
   };
@@ -149,15 +152,15 @@ export const TimeSelectChart = ({
 
   return (
     <>
+      <h3>{label}</h3>
       <SelectionArea
-        className={style.table}
+        className={style.selection_area}
         onBeforeStart={onBeforeStart}
         onStart={onStart}
         onMove={onMove}
         onStop={onStop}
         selectables=".selectable"
       >
-        <h3>{label}</h3>
         <table id={table_id} className={style.table}>
           <thead>
             <tr>
@@ -196,6 +199,8 @@ export const TimeDisplayChart = ({
   userData: allUserDataInterface | null | undefined;
 }) => {
   var myGradient = new Rainbow();
+  myGradient.setNumberRange(0,userData? Object.keys(userData).length : 1);
+  myGradient.setSpectrum('#FFE5CF', '#091094');
 
   useEffect(() => {
     tableKey.current += 1;
@@ -211,7 +216,9 @@ export const TimeDisplayChart = ({
             let tableEntry = row?.querySelector(
               `[data-time-start="${i}"]`
             ) as HTMLElement;
-            tableEntry!.style.background = "#" + myGradient.colourAt(i);
+            tableEntry!.dataset.num = (parseInt(tableEntry.dataset.num) + 1).toString();
+            tableEntry!.style.background =
+              "#" + myGradient.colourAt(parseInt(tableEntry.dataset.num));
           }
         });
       }
@@ -244,6 +251,7 @@ export const TimeDisplayChart = ({
             data-time-start={hour}
             data-time-end={hour + SUPPORTED_TIME_INCREMENT}
             style={{ background: "white" }}
+            data-num={0}
           ></td>
           <td
             className={`${style.hr}`}
@@ -251,6 +259,7 @@ export const TimeDisplayChart = ({
             data-time-start={hour + SUPPORTED_TIME_INCREMENT}
             data-time-end={hour + 1}
             style={{ background: "white" }}
+            data-num={0}
           ></td>
         </React.Fragment>
       );
