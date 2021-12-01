@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file implements the App component that is rendered in 
+ * main.tsx. The app uses the react-router package to define the navigation
+ * between the 2 main pages of the application:The CreateView and EventView
+ * components.
+ * @package React-router-dom - This package provides tools for rendering and 
+ * linking multiple routes(pages) in a single React app.
+ */
 import React from "react";
 import "./App.css";
 import { createMeeting, getMeetingData } from "./firebase";

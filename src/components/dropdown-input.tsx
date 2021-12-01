@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This module provides the DropdownInput component for 
+ * the CreateView component. The component is configured in CreateView to 
+ * allow the user to choose an appropriate Time Zone for their event.
+ * @package React Select - Node package that provides a highly configurable
+ * Dropdown select component
+ */
 import React from "react";
 import Select from "react-select";
 import { classNames } from "react-select/dist/declarations/src/utils";

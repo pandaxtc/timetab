@@ -1,3 +1,14 @@
+/**
+ * @fileoverview This module acts as an adapter for the Firestore API so that
+ * it used by system components while abstracting the database operations out
+ * of the components' code. This is  
+ * @package firebase/app - This package is for initializing access credentials
+ * for our Firebase project so that our app's components can safely carry out
+ * transactions.
+ * @package firebase/firestore - This package exposes the API functions for 
+ * performing Firestore database transactions that are used to store event 
+ * data.
+ */
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, QueryDocumentSnapshot, query } from "firebase/firestore";

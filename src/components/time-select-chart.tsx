@@ -1,3 +1,15 @@
+/**
+ * @fileoverview This module provides 2 related components: TimeSelectChart
+ * and TimeDisplayChart. TimeSelectChart is for the user to choose their 
+ * available times and TimeDisplayChart displays the whole event group's
+ * availability data. 
+ * @package viselect - This package provides tools for selecting ranges of
+ * cells in the TimeSelectChart with mouse events like hold and drag.
+ * @package rainbowvis - This package is used to generate a color spectrum
+ * mapped to numbers that correspond to the people available in a time slot.
+ * 
+ * 
+ */
 import React, { Key, useReducer, useEffect, useRef, useState } from "react";
 import SelectionArea, {
   Behaviour,

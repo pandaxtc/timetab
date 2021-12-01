@@ -1,3 +1,22 @@
+/**
+ * @fileoverview This module defines the Event View component, which is the
+ * page that displays a created event. There are 2 main visualization 
+ * components. The first is the user's own availability which can be edited
+ * and saved after the user logs in with their username. The second is a chart
+ * that shows the overlapping availability of all the users in the event.
+ * 
+ * @package Firebase - The functions from this module are used to interact 
+ * with the Firestore API to save meeting data and retrieve it.
+ * @package time-select-chart - Module that provides TimeSelectChart component
+ * that visualizes availability for the user and allows the user to 
+ * interactively change their available times for the event, and a 
+ * TimeDisplayChart component that displays the whole event group's 
+ * availability.
+ * @package Button - Wrapper component for button element that takes a label 
+ * name and callbackFunction to define the button's behavior.
+ * @package TextInput - Generic component for entering name to login and edit
+ * event availability.
+ */
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
 import {
   setAllUserDataListener,

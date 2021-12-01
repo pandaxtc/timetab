@@ -1,4 +1,13 @@
+/**
+ * @fileoverview This module defines the AvailabilityLegend component for use
+ * in the Event View page. The legend tells the user the number of people that
+ *  correspond to the color of a given time slot in the time select chart.
+ * @package rainbowvis.js is used to map a number range to a color spectrum 
+ * from our chosen color palette.
+ * 
+ */
 import Rainbow from "rainbowvis.js";
+
 import style from "./availability-legend.module.css";
 
 export const AvailabilityLegend = ({ numUsers }: { numUsers: number }) => {

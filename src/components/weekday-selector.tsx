@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This module provides a WeekdaySelector component that is used
+ * in the CreateView component to allow the user to select which days of the 
+ * week to allow in the event being created. 
+ * 
+ */
 import SelectionArea, { SelectionEvent } from "@viselect/react";
 import React, { useEffect, useRef, useState } from "react";
 

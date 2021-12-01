@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file defines important constants for use in
+ * components related to selecting event times and related parameters, like
+ * time zones, or days of the week. 
+ * @package luxon - This package is used for its API dealing with dates and times
+ * @package @vvo/tzdb - This package is used for its list of IANA timezone names
+ * and the zones' associated time offset. 
+ */
 import { rawTimeZones } from "@vvo/tzdb";
 import { IANAZone } from "luxon";
 

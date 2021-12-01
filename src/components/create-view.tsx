@@ -1,7 +1,25 @@
+/**
+ * @fileoverview CreateView is the landing page for TimeTab users that are
+ * looking to create a new event to schedule. Users can carry out the initial
+ * configuration of their event with this page. The event name, days of the 
+ * week, start and end times, and time-zone are all configured here. 
+ * @package Firebase - this module acts as an adapter for the Firestore API to
+ * interface with the other components in the project.
+ * @package Button - generic button component with callback function for mouse
+ * click event.
+ * @package DaterangeSelector - Component for choosing either a range of 
+ * weekdays or dates
+ * @package TextInput - Generic input component used to record event name.
+ * @package DropdownInput - Component used to choose time zone for event.
+ * @package react-router - Package with react component for routing between
+ * CreateView and EventView pages. 
+ */
+
 import React, { useState, useRef } from "react";
 import { createMeeting } from "../firebase";
 import Button from "./button";
 import DaterangeSelector from "./daterange-selector";
+
 import TextInput from "./text-input";
 
 import "../vars.css";
@@ -88,15 +106,7 @@ const CreateView = () => {
       <Button type="submit" label="Create" onClick={createEvent}></Button>
     </form>
   );
-  /*
-  Timetab Header
-  Event Name Input
-  Date toggle
-  Date picker
-  Time zone picker (dropdown)
   
-  CreateEventButton
-  */
 };
 
 export default CreateView;
