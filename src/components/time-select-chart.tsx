@@ -51,7 +51,6 @@ export const TimeSelectChart = ({
     }
 
     function cancelTimeout() {
-      console.log("test");
       if (timeout.current != null) {
         clearTimeout(timeout.current);
       }

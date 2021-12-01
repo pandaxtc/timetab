@@ -19,7 +19,6 @@ const WeekdaySelector = () => {
   });
 
   const onStart = ({ selection, event }: SelectionEvent) => {
-    // console.log(event);
     if (event?.target) {
       const el = event.target as HTMLDivElement;
       select.current = !selectedIndexes.current.has(
@@ -37,7 +36,6 @@ const WeekdaySelector = () => {
       }
     }
     setT((t) => t + 1);
-    // console.log(selectedIndexes.current);
     selection.clearSelection();
   };
 
@@ -53,12 +51,10 @@ const WeekdaySelector = () => {
     }
 
     setT((t) => t + 1);
-    // console.log(selectedIndexes.current);
   };
 
   const onStop = () => {
     savedSelectedIndexes.current = selectedIndexes.current;
-    console.log(`STOPPED, ${savedSelectedIndexes.current}`);
   };
 
   return (
