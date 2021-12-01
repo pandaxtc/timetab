@@ -199,7 +199,8 @@ export const TimeDisplayChart = ({
   userData: allUserDataInterface | null | undefined;
 }) => {
   var myGradient = new Rainbow();
-  myGradient.setNumberRange(0,userData? Object.keys(userData).length : 1);
+  let maxUsers = userData? Math.max(Object.keys(userData).length, 1) : 1;
+  myGradient.setNumberRange(0, maxUsers);
   myGradient.setSpectrum('#FFE5CF', '#091094');
 
   useEffect(() => {
