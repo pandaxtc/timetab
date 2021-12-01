@@ -1,5 +1,5 @@
 import SelectionArea, { SelectionEvent } from "@viselect/react";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import style from "./weekday-selector.module.css";
 import { WEEKDAYS } from "../constants";

@@ -10,7 +10,7 @@ import SaveDeleteSelector from "./save-delete-selector";
 import { SUPPORTED_TIME_INCREMENT } from "../constants";
 import { allUserDataInterface, TimeInterval } from "../firebase";
 import { tableRowforEach, union, difference } from "../misc-functions";
-import * as Rainbow from "rainbowvis.js";
+import Rainbow from "rainbowvis.js";
 
 export const TimeSelectChart = ({
   label,
@@ -199,9 +199,9 @@ export const TimeDisplayChart = ({
   userData: allUserDataInterface | null | undefined;
 }) => {
   var myGradient = new Rainbow();
-  let maxUsers = userData? Math.max(Object.keys(userData).length, 1) : 1;
+  let maxUsers = userData ? Math.max(Object.keys(userData).length, 1) : 1;
   myGradient.setNumberRange(0, maxUsers);
-  myGradient.setSpectrum('#FFE5CF', '#091094');
+  myGradient.setSpectrum("#FFE5CF", "#091094");
 
   useEffect(() => {
     tableKey.current += 1;
@@ -217,7 +217,9 @@ export const TimeDisplayChart = ({
             let tableEntry = row?.querySelector(
               `[data-time-start="${i}"]`
             ) as HTMLElement;
-            tableEntry!.dataset.num = (parseInt(tableEntry.dataset.num) + 1).toString();
+            tableEntry!.dataset.num = (
+              parseInt(tableEntry.dataset.num) + 1
+            ).toString();
             tableEntry!.style.background =
               "#" + myGradient.colourAt(parseInt(tableEntry.dataset.num));
           }
