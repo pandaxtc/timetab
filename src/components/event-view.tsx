@@ -73,21 +73,21 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
     e.preventDefault();
     let intervals = new Map<number, Array<TimeInterval>>();
     tableRowforEach(selectableTableID, (row, rowIndex) => {
-      let data_entries = row.childNodes.values() as IterableIterator<Element>;
+      let dataEntries = row.childNodes.values() as IterableIterator<Element>;
       let startTime: number | undefined = undefined;
       let endTime: number | undefined = undefined;
       let currInterval: Array<TimeInterval> = [];
-      for (const entry of data_entries) {
+      for (const entry of dataEntries) {
         if (!entry.classList.contains(chartStyle.selected)) continue;
-        let entry_start = parseFloat(entry.getAttribute("data-time-start")!);
+        let entryStart = parseFloat(entry.getAttribute("data-time-start")!);
         if (startTime === undefined) {
-          startTime = entry_start;
+          startTime = entryStart;
           endTime = parseFloat(entry.getAttribute("data-time-end")!);
-        } else if (entry_start === endTime) {
+        } else if (entryStart === endTime) {
           endTime = parseFloat(entry.getAttribute("data-time-end")!);
         } else {
           currInterval.push(new TimeInterval(startTime!, endTime!));
-          startTime = entry_start;
+          startTime = entryStart;
           endTime = parseFloat(entry.getAttribute("data-time-end")!);
         }
       }
@@ -142,19 +142,19 @@ const EventView = ({ meetingID }: { meetingID: string }) => {
             )}
             {auth && (
               <TimeSelectChart
-                table_id={selectableTableID}
+                tableId={selectableTableID}
                 label="Your Availability"
-                column_labels={timeArr}
-                row_labels={meetingData ? meetingData.days : []}
+                columnLabels={timeArr}
+                rowLabels={meetingData ? meetingData.days : []}
                 addTimes={addTimes}
                 selectedIndexes={initialTimeSelection}
               />
             )}
             <TimeDisplayChart
-              table_id={displayTableID}
+              tableId={displayTableID}
               label="Your Group's Availability"
-              column_labels={timeArr}
-              row_labels={meetingData ? meetingData.days : []}
+              columnLabels={timeArr}
+              rowLabels={meetingData ? meetingData.days : []}
               userData={userData}
             />
           </form>
