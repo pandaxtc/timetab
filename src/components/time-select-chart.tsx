@@ -11,6 +11,7 @@ import { SUPPORTED_TIME_INCREMENT } from "../constants";
 import { allUserDataInterface, TimeInterval } from "../firebase";
 import { tableRowforEach, union, difference } from "../misc-functions";
 import Rainbow from "rainbowvis.js";
+import { AvailabilityLegend } from "./availability-legend";
 
 export const TimeSelectChart = ({
   label,
@@ -122,17 +123,15 @@ export const TimeSelectChart = ({
       return (
         <React.Fragment key={key}>
           <td
-            className={`selectable ${style.half_hr} ${
-              selectedIndexes.current.has(`${key}h`) ? style.selected : ""
-            }`}
+            className={`selectable ${style.half_hr} ${selectedIndexes.current.has(`${key}h`) ? style.selected : ""
+              }`}
             data-key={`${key}h`}
             data-time-start={hour}
             data-time-end={hour + SUPPORTED_TIME_INCREMENT}
           ></td>
           <td
-            className={`selectable ${style.hr} ${
-              selectedIndexes.current.has(key) ? style.selected : ""
-            }`}
+            className={`selectable ${style.hr} ${selectedIndexes.current.has(key) ? style.selected : ""
+              }`}
             data-key={key}
             data-time-start={hour + SUPPORTED_TIME_INCREMENT}
             data-time-end={hour + 1}
@@ -199,9 +198,9 @@ export const TimeDisplayChart = ({
   userData: allUserDataInterface | null | undefined;
 }) => {
   var myGradient = new Rainbow();
-  let maxUsers = userData ? Math.max(Object.keys(userData).length, 1) : 1;
-  myGradient.setNumberRange(0, maxUsers);
-  myGradient.setSpectrum("#FFE5CF", "#091094");
+  let maxUsers = userData ? Object.keys(userData).length : 0;
+  myGradient.setNumberRange(-1, maxUsers);
+  myGradient.setSpectrum('#FFE5CF', '#091094');
 
   useEffect(() => {
     tableKey.current += 1;
@@ -217,11 +216,9 @@ export const TimeDisplayChart = ({
             let tableEntry = row?.querySelector(
               `[data-time-start="${i}"]`
             ) as HTMLElement;
-            tableEntry!.dataset.num = (
-              parseInt(tableEntry.dataset.num) + 1
-            ).toString();
             tableEntry!.style.background =
-              "#" + myGradient.colourAt(parseInt(tableEntry.dataset.num));
+              "#" + myGradient.colourAt(parseInt(tableEntry.dataset.num) - 1);
+            tableEntry!.dataset.num = (parseInt(tableEntry.dataset.num) + 1).toString();
           }
         });
       }
@@ -275,17 +272,20 @@ export const TimeDisplayChart = ({
     );
   });
   return (
-    <div style={{ overflow: "auto" }}>
+    <>
       <h3>{label}</h3>
-      <table key={tableKey.current} id={table_id} className={style.table}>
-        <thead>
-          <tr>
-            <th></th>
-            {col_labels}
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
-    </div>
+      <div style={{ overflow: "auto" }}>
+        <table key={tableKey.current} id={table_id} className={style.table}>
+          <thead>
+            <tr>
+              <th></th>
+              {col_labels}
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+      </div>
+      <AvailabilityLegend numUsers={maxUsers}/>
+    </>
   );
 };

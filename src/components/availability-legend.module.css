@@ -1,0 +1,10 @@
+.legendElement {
+  height: 16px;
+  width: 30px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.ul {
+  list-style: none;
+}
