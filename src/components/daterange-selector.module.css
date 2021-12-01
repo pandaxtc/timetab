@@ -2,6 +2,7 @@
 
 .selector {
   white-space: nowrap;
+  user-select: none;
 }
 
 .selector input {

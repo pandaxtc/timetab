@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  ChangeEvent,
-  HtmlHTMLAttributes,
-  forwardRef,
-} from "react";
+import React, { useState, useRef } from "react";
 import { createMeeting } from "../firebase";
 import Button from "./button";
 import DaterangeSelector from "./daterange-selector";
@@ -15,6 +9,7 @@ import style from "./create-view.module.css";
 import weekdayStyle from "./weekday-selector.module.css";
 import DropdownInput from "./dropdown-input";
 import { TIMES, TIMEZONES } from "../constants";
+import { useHistory } from "react-router";
 
 const CreateView = () => {
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -23,7 +18,7 @@ const CreateView = () => {
     value: number;
     label: string;
   }
-
+  const history = useHistory();
   const [timeZone, setTimeZone] = useState(tz);
   const [eventName, setEventName] = useState("");
   const [eventType, setEventType] = useState<"weekday" | "date">("weekday");
@@ -41,7 +36,7 @@ const CreateView = () => {
       dates.push(ele.innerHTML);
     }
 
-    await createMeeting({
+    const id = await createMeeting({
       name: eventName,
       type: eventType,
       tz: timeZone,
@@ -49,6 +44,8 @@ const CreateView = () => {
       endHour: endTime ? endTime.value : 0,
       days: dates,
     });
+
+    history.push(`/m/${id}`);
   };
 
   return (

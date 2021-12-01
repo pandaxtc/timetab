@@ -10,6 +10,8 @@ import SaveDeleteSelector from "./save-delete-selector";
 import { SUPPORTED_TIME_INCREMENT } from "../constants";
 import { allUserDataInterface, TimeInterval } from "../firebase";
 import { tableRowforEach, union, difference } from "../misc-functions";
+import Rainbow from "rainbowvis.js";
+import { AvailabilityLegend } from "./availability-legend";
 
 export const TimeSelectChart = ({
   label,
@@ -29,6 +31,44 @@ export const TimeSelectChart = ({
   const savedSelectedIndexes = useRef(selectedIndexes.current);
   const select = useRef(true);
   const [_, setT] = useState(0);
+
+  const timeout = useRef<null | number>(null);
+
+  const onBeforeStart = ({ selection, event }: SelectionEvent) => {
+    if (!(event instanceof TouchEvent)) {
+      return;
+    }
+
+    // const el = event.target as HTMLDivElement;
+    if (timeout.current != null) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+
+    function postTimeout() {
+      selection.trigger(event);
+      timeout.current = null;
+    }
+
+    function cancelTimeout() {
+      console.log("test");
+      if (timeout.current != null) {
+        clearTimeout(timeout.current);
+      }
+      document
+        .getElementById(table_id)
+        .parentElement.removeEventListener("scroll", cancelTimeout);
+      document.removeEventListener("scroll", cancelTimeout);
+    }
+
+    timeout.current = window.setTimeout(postTimeout, 500);
+
+    document
+      .getElementById(table_id)
+      .parentElement.addEventListener("scroll", cancelTimeout);
+    document.addEventListener("scroll", cancelTimeout);
+    return false;
+  };
 
   const onStart = ({ selection, event }: SelectionEvent) => {
     if (event?.target) {
@@ -57,6 +97,10 @@ export const TimeSelectChart = ({
     setT((t) => t + 1);
   };
   const onStop = () => {
+    if (timeout.current != null) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
     savedSelectedIndexes.current = selectedIndexes.current;
   };
 
@@ -79,17 +123,15 @@ export const TimeSelectChart = ({
       return (
         <React.Fragment key={key}>
           <td
-            className={`selectable ${style.half_hr} ${
-              selectedIndexes.current.has(`${key}h`) ? style.selected : ""
-            }`}
+            className={`selectable ${style.half_hr} ${selectedIndexes.current.has(`${key}h`) ? style.selected : ""
+              }`}
             data-key={`${key}h`}
             data-time-start={hour}
             data-time-end={hour + SUPPORTED_TIME_INCREMENT}
           ></td>
           <td
-            className={`selectable ${style.hr} ${
-              selectedIndexes.current.has(key) ? style.selected : ""
-            }`}
+            className={`selectable ${style.hr} ${selectedIndexes.current.has(key) ? style.selected : ""
+              }`}
             data-key={key}
             data-time-start={hour + SUPPORTED_TIME_INCREMENT}
             data-time-end={hour + 1}
@@ -109,14 +151,15 @@ export const TimeSelectChart = ({
 
   return (
     <>
+      <h3>{label}</h3>
       <SelectionArea
-        className={style.table}
+        className={style.selection_area}
+        onBeforeStart={onBeforeStart}
         onStart={onStart}
         onMove={onMove}
         onStop={onStop}
         selectables=".selectable"
       >
-        <h3>{label}</h3>
         <table id={table_id} className={style.table}>
           <thead>
             <tr>
@@ -152,8 +195,13 @@ export const TimeDisplayChart = ({
   row_labels: Array<String>;
   column_labels: Array<String>;
   table_id: string;
-  userData: allUserDataInterface | null;
+  userData: allUserDataInterface | null | undefined;
 }) => {
+  var myGradient = new Rainbow();
+  let maxUsers = userData ? Object.keys(userData).length : 0;
+  myGradient.setNumberRange(-1, maxUsers);
+  myGradient.setSpectrum('#FFE5CF', '#091094');
+
   useEffect(() => {
     tableKey.current += 1;
     tableRowforEach(table_id, (row, rowIndex) => {
@@ -168,7 +216,9 @@ export const TimeDisplayChart = ({
             let tableEntry = row?.querySelector(
               `[data-time-start="${i}"]`
             ) as HTMLElement;
-            tableEntry!.style.background = "hotpink"; // replace with gradient?
+            tableEntry!.style.background =
+              "#" + myGradient.colourAt(parseInt(tableEntry.dataset.num) - 1);
+            tableEntry!.dataset.num = (parseInt(tableEntry.dataset.num) + 1).toString();
           }
         });
       }
@@ -201,6 +251,7 @@ export const TimeDisplayChart = ({
             data-time-start={hour}
             data-time-end={hour + SUPPORTED_TIME_INCREMENT}
             style={{ background: "white" }}
+            data-num={0}
           ></td>
           <td
             className={`${style.hr}`}
@@ -208,6 +259,7 @@ export const TimeDisplayChart = ({
             data-time-start={hour + SUPPORTED_TIME_INCREMENT}
             data-time-end={hour + 1}
             style={{ background: "white" }}
+            data-num={0}
           ></td>
         </React.Fragment>
       );
@@ -220,17 +272,20 @@ export const TimeDisplayChart = ({
     );
   });
   return (
-    <div style={{ overflow: "auto" }}>
+    <>
       <h3>{label}</h3>
-      <table key={tableKey.current} id={table_id} className={style.table}>
-        <thead>
-          <tr>
-            <th></th>
-            {col_labels}
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
-    </div>
+      <div style={{ overflow: "auto" }}>
+        <table key={tableKey.current} id={table_id} className={style.table}>
+          <thead>
+            <tr>
+              <th></th>
+              {col_labels}
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+      </div>
+      <AvailabilityLegend numUsers={maxUsers}/>
+    </>
   );
 };

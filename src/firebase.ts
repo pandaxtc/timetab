@@ -98,7 +98,7 @@ const db = getFirestore();
 export async function getMeetingData(meetID: string) {
   const docRef = doc(db, "Meetings", meetID);
   const meeting = await getDoc(docRef);
-  return meeting.data() as meetingDataInterface;
+  return meeting.data() as meetingDataInterface | undefined;
 }
 
 export async function setAllUserDataListener(
