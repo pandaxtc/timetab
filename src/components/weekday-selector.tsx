@@ -1,5 +1,5 @@
 import SelectionArea, { SelectionEvent } from "@viselect/react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import style from "./weekday-selector.module.css";
 import { WEEKDAYS } from "../constants";
@@ -8,8 +8,15 @@ import { difference, union } from "../misc-functions";
 const WeekdaySelector = () => {
   const savedSelectedIndexes = useRef(new Set<number>());
   const selectedIndexes = useRef(new Set<number>());
+  const curElement = useRef<HTMLDivElement|null>();
   const select = useRef(true);
   const [_, setT] = useState(0);
+
+  useEffect(() =>{
+    curElement.current.parentElement.addEventListener('touchstart', (ev)=>{
+      ev.preventDefault();
+    });
+  });
 
   const onStart = ({ selection, event }: SelectionEvent) => {
     // console.log(event);
@@ -73,6 +80,7 @@ const WeekdaySelector = () => {
             aria-pressed={selectedIndexes.current.has(i)}
             key={i}
             data-key={i}
+            ref={curElement}
             onKeyDown={(e) => {
               if (e.code !== "Space" && e.code !== "Enter") return;
               if (selectedIndexes.current.has(i)) {
