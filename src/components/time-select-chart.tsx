@@ -15,16 +15,16 @@ import { AvailabilityLegend } from "./availability-legend";
 
 export const TimeSelectChart = ({
   label,
-  row_labels,
-  column_labels,
-  table_id,
+  rowLabels,
+  columnLabels,
+  tableId,
   addTimes,
   selectedIndexes,
 }: {
   label: string;
-  row_labels: Array<String>;
-  column_labels: Array<String>;
-  table_id?: string;
+  rowLabels: Array<String>;
+  columnLabels: Array<String>;
+  tableId?: string;
   addTimes?: (e: React.MouseEvent<HTMLElement>) => void;
   selectedIndexes: React.MutableRefObject<Set<String>>;
 }) => {
@@ -56,7 +56,7 @@ export const TimeSelectChart = ({
         clearTimeout(timeout.current);
       }
       document
-        .getElementById(table_id)
+        .getElementById(tableId)
         .parentElement.removeEventListener("scroll", cancelTimeout);
       document.removeEventListener("scroll", cancelTimeout);
     }
@@ -64,7 +64,7 @@ export const TimeSelectChart = ({
     timeout.current = window.setTimeout(postTimeout, 500);
 
     document
-      .getElementById(table_id)
+      .getElementById(tableId)
       .parentElement.addEventListener("scroll", cancelTimeout);
     document.addEventListener("scroll", cancelTimeout);
     return false;
@@ -104,20 +104,20 @@ export const TimeSelectChart = ({
     savedSelectedIndexes.current = selectedIndexes.current;
   };
 
-  let col_labels = column_labels.map((col_label) => {
+  let colLabels = columnLabels.map((colLabel) => {
     return (
       <th
         className={style.unselectable}
         colSpan={1 / SUPPORTED_TIME_INCREMENT}
-        key={col_label as Key}
+        key={colLabel as Key}
       >
-        {col_label}
+        {colLabel}
       </th>
     );
   });
 
-  let rows = row_labels.map((row_label, i) => {
-    let row_elements = column_labels.map((time, j) => {
+  let rows = rowLabels.map((rowLabel, i) => {
+    let rowElements = columnLabels.map((time, j) => {
       let key = `row${i}col${j}`;
       let hour = parseInt(time.substring(0, time.search(":")));
       return (
@@ -141,10 +141,10 @@ export const TimeSelectChart = ({
     });
     return (
       <tr key={i} data-row={i}>
-        <th className={style.row_label} key={row_label as Key}>
-          {row_label}
+        <th className={style.rowLabel} key={rowLabel as Key}>
+          {rowLabel}
         </th>
-        {row_elements}
+        {rowElements}
       </tr>
     );
   });
@@ -160,11 +160,11 @@ export const TimeSelectChart = ({
         onStop={onStop}
         selectables=".selectable"
       >
-        <table id={table_id} className={style.table}>
+        <table id={tableId} className={style.table}>
           <thead>
             <tr>
               <th></th>
-              {col_labels}
+              {colLabels}
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -186,15 +186,15 @@ export const TimeSelectChart = ({
 
 export const TimeDisplayChart = ({
   label,
-  row_labels,
-  column_labels,
-  table_id,
+  rowLabels,
+  columnLabels,
+  tableId,
   userData,
 }: {
   label: string;
-  row_labels: Array<String>;
-  column_labels: Array<String>;
-  table_id: string;
+  rowLabels: Array<String>;
+  columnLabels: Array<String>;
+  tableId: string;
   userData: allUserDataInterface | null | undefined;
 }) => {
   var myGradient = new Rainbow();
@@ -204,7 +204,7 @@ export const TimeDisplayChart = ({
 
   useEffect(() => {
     tableKey.current += 1;
-    tableRowforEach(table_id, (row, rowIndex) => {
+    tableRowforEach(tableId, (row, rowIndex) => {
       for (const userName in userData) {
         let userInfo = userData[userName];
         userInfo.intervals.get(rowIndex)!.forEach((interval: TimeInterval) => {
@@ -227,20 +227,20 @@ export const TimeDisplayChart = ({
 
   const tableKey = useRef(0);
 
-  let col_labels = column_labels.map((col_label) => {
+  let colLabels = columnLabels.map((colLabel) => {
     return (
       <th
         className={style.unselectable}
         colSpan={1 / SUPPORTED_TIME_INCREMENT}
-        key={col_label as Key}
+        key={colLabel as Key}
       >
-        {col_label}
+        {colLabel}
       </th>
     );
   });
 
-  let rows = row_labels.map((row_label, i) => {
-    let row_elements = column_labels.map((time, j) => {
+  let rows = rowLabels.map((rowLabel, i) => {
+    let rowElements = columnLabels.map((time, j) => {
       let key = `row${i}col${j}`;
       let hour = parseInt(time.substring(0, time.search(":")));
       return (
@@ -266,8 +266,8 @@ export const TimeDisplayChart = ({
     });
     return (
       <tr key={i} data-row={i}>
-        <th className={style.row_label}>{row_label}</th>
-        {row_elements}
+        <th className={style.rowLabel}>{rowLabel}</th>
+        {rowElements}
       </tr>
     );
   });
@@ -275,11 +275,11 @@ export const TimeDisplayChart = ({
     <>
       <h3>{label}</h3>
       <div style={{ overflow: "auto" }}>
-        <table key={tableKey.current} id={table_id} className={style.table}>
+        <table key={tableKey.current} id={tableId} className={style.table}>
           <thead>
             <tr>
               <th></th>
-              {col_labels}
+              {colLabels}
             </tr>
           </thead>
           <tbody>{rows}</tbody>
