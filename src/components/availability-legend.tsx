@@ -1,4 +1,4 @@
-import * as Rainbow from "rainbowvis.js";
+import Rainbow from "rainbowvis.js";
 import style from "./availability-legend.module.css";
 
 export const AvailabilityLegend = ({ numUsers }: { numUsers: number }) => {
