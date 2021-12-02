@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This module provides a basic error message to display
+ * to the user when a 404 error is encountered.
+ */
 import React from "react";
 
 function NotFound() {

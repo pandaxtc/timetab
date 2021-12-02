@@ -1,3 +1,14 @@
+/**
+ * @fileoverview This file contains 3 general-purpose functions
+ * for operating on user and event data. tableRowforEach applies
+ * a parameterized callback function on each row in a table passed to the 
+ * function. The union and difference functions carry out the set union 
+ * and set difference operations, respectively, on two sets. These are used
+ * for operating on the event availability data based on user input (either
+ * adding available times or removing them).
+ */
+
+
 export const tableRowforEach = (
   tableID: string,
   rowCallback: (rowEle: HTMLTableRowElement, rowIndex: number) => void

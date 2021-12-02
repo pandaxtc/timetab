@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This component toggles between choosing a range of dates
+ * and a range of weekdays when configuring an event
+ * @package DayPicker is  a component for navigating across arbitrary months
+ * and choosing ranges of dates.
+ * @package WeekdaySelector is a component for choosing which weekdays the 
+ * event should have available.
+ */
 import React, { ChangeEvent, useState } from "react";
 import DayPicker from "react-day-picker";
 

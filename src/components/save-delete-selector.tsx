@@ -1,3 +1,8 @@
+/**
+ * @fileoverview This module provides a SaveDeleteSelector component that is 
+ * used to toggle between saving new available times and removing available
+ * times in the EventView. 
+ */
 import React, { ChangeEvent, useState } from "react";
 
 import style from "./save-delete-selector.module.css";
